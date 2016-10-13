@@ -72,8 +72,9 @@ d3.json("/data/network", function(error, mydata) {
       .enter().append("g")
       .attr("class", "node")
 	  .call(drag) // this command enables the dragging feature
-	  .on("dblclick", dblclick);
-    //.on("click",clickAction); // this was removed but can be used to display a hidden chart
+	  .on("dblclick", dblclick)
+    .on("click",function(d){updateTSPlot(d.name)});
+    // .on("click",clickAction); // this was removed but can be used to display a hidden chart
   
   node.each(function(d){
     if (d.classNm) {
@@ -150,14 +151,14 @@ function dragstart(d) {
 function dblclick(d) {
   d3.select(this).classed("fixed", d.fixed = false);
 }
-//function clickAction(d){
- // if (document.getElementById('chart').style.display=='none'){
- //   document.getElementById('chart').style.display='block';
- // }
- // else {
- //  document.getElementById('chart').style.display='none';
- // }
-//}
+// function clickAction(d){
+//  if (document.getElementById('chart').style.display=='none'){
+//    document.getElementById('chart').style.display='block';
+//  }
+//  else {
+//   document.getElementById('chart').style.display='none';
+//  }
+// }
 function saveXY(){
   var pre = document.getElementById('rmPreText').value;
 	var myStr = "data:text/csv;charset=utf-8,";
@@ -252,3 +253,5 @@ function changeGravity(){
 function changeCharge(){
 	force.charge(Number(document.getElementById('chargeVal').value));
 }
+
+//node.on("mouseover",mouseover)

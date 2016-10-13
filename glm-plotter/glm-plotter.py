@@ -46,8 +46,10 @@ def glm():
 @app.route("/data/ts/<nodeID>")
 def ts(nodeID):
     fileNm = 'uploads/' + str(nodeID) + '.tsv'
-    with open(fileNm, 'r') as fr:
-        myStr = fr.read()
+    myStr = ''
+    if os.path.isfile(fileNm):
+        with open(fileNm, 'r') as fr:
+            myStr = fr.read()
     return myStr
 
 

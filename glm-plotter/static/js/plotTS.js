@@ -51,8 +51,18 @@ function type(d) {
   return d;
 }
 
-function updateTSPlot(){
-    var endPoint = "data/ts/"+document.getElementById('tsPlotID').value
+var myInput = d3.select("body")
+    .append("input")
+    .attr("type","button")
+    .attr("value", "change ts")
+    .on("click", updateTSPlot)
+
+function updateTSPlot(nodeID){
+    if (typeof nodeID !== 'undefined'){
+        var endPoint = "data/ts/" + nodeID
+    } else{
+        var endPoint = "data/ts/"+document.getElementById('tsPlotID').value
+    }
     d3.tsv(endPoint, type, function(error, data) {
       if (error) throw error;
 
