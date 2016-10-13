@@ -42,7 +42,7 @@ var node = container.selectAll(".node"),
     link = container.selectAll(".link");
 
 // load data
-d3.json("/data", function(error, mydata) {
+d3.json("/data/network", function(error, mydata) {
   if (error) throw error;
 
   // extract data from the json input

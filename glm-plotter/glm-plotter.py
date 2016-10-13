@@ -23,8 +23,8 @@ def index():
             fullfilename = os.path.join(app.config['UPLOAD_FOLDER'], "curr.glm")
             request.files['glm_file'].save(fullfilename)
     return render_template("index.html")
-@app.route("/data")
-def data():
+@app.route("/data/network")
+def glm():
     glmFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.glm")
     csvFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.csv")
     if 'csv' in session and session['csv'] and os.path.isfile(csvFile):
@@ -42,6 +42,14 @@ def data():
         glm_name = ''
     JSONstr = '{"file":"' + glm_name + '","graph":' + graphJSON + ',"fixedNodes":' + fixedNodesJSON +'}'
     return JSONstr
+
+@app.route("/data/ts/<nodeID>")
+def ts(nodeID):
+    fileNm = 'uploads/' + str(nodeID) + '.tsv'
+    with open(fileNm, 'r') as fr:
+        myStr = fr.read()
+    return myStr
+
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
@@ -61,4 +69,4 @@ def parseFixedNodes(nodesFile):
 
 if __name__ == "__main__":
     app.secret_key = 'B0er23j/4yX R~XHH!jmN]LWX/,?Rh'
-    app.run()
+    app.run(debug=True)

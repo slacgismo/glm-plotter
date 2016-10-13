@@ -13,6 +13,7 @@
 <script src="static/lib/js/d3.js"></script>
 
 <script src="static/js/plotNetwork.js"></script>
+<script src="static/js/plotTS.js"></script>
 
 
 
@@ -83,6 +84,16 @@ Legend:
     <input type="file" name="fixedNodes" />
     <input type="submit" value="Submit fixed positions csv"/>
 </form>
+<div id="tsPlotChooser">
+	<input name="tsPlotTxt" 
+		id="tsPlotID"
+		type="text" 
+		value="node1"  />
+    <input name="tsPlotButton" 
+		type="button" 
+		value="change ts plot" 
+		onclick="updateTSPlot()" />
+</div>
 </div>
 
 <!-- footer-->      
