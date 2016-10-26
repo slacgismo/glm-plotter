@@ -193,3 +193,18 @@ def createD3JSON(objs,fileNm_out=''):
             f.write(JSONstr)
         JSONstr='' # if we wrote to file, don't return it
     return JSONstr
+
+def preprocessTS(fileNm):
+    """
+        This function reads csv output data from of GridLab-D simulation and
+        preprocesses it to make it easy to ready using the d3.csv function.
+    """
+    myStr = ''
+    with open(fileNm, 'r') as fr:
+        data = fr.readlines()
+    dataFirstLine = 0
+    dataLines = [d for d in data if d[0] is not '#']
+    headerLines = [d for d in data if d[0] is '#']
+    dataLines.insert(0,headerLines[-1][2:]) # remove the # and the first space
+    print(''.join(dataLines))
+    return ''.join(dataLines)

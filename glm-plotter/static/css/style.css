@@ -142,3 +142,17 @@ circle.meter {
   text-align: center;
   border-top: 1px solid #F2F2F2;  
 }
+
+/* Timeseries plotting */
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
