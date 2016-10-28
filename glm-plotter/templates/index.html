@@ -1,24 +1,35 @@
+<!--
+JAC - jdechalendar@stanford.edu
+July 20, 2016
+Index page of glm-plotter app
+-->
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head><link rel="stylesheet" href="static/css/style.css"></head>
 <style>body { font: 12px Arial;}</style>
 <body>
-<div id="fileChooser">
+<!-- <div id="fileChooser">
 	<form action="/" method="post" enctype="multipart/form-data">
 	    <input type="file" name="glm_file" value="e"/>
 	    <input type="submit" value="Submit glm model" />
 	</form>
 </div>
-<div id="main"></div>
-<script src="static/lib/js/d3.js"></script>
-
-<script src="static/js/plotNetwork.js"></script>
-<script src="static/js/plotTS.js"></script>
+ --><div id="main"></div>
 
 
+ 
+<!-- <p>
+  <label for="time"
+         style="display: inline-block; align: left; width: 140px; text-align: right">
+         Time = <span id="prettyTime">...</span>
+       </label>
+  <input type="range" id="curr_time" min="240" max="1440" style="width:600px" value="460">
+</p> -->
 
 
-<div>
+
+<!-- <div>
 Legend:
 <ul class="legend">
     <li><span class="overhead"></span> Overhead Line</li>
@@ -28,7 +39,7 @@ Legend:
     <li><span class="trans"></span> Transformer</li>
 </ul>
 </div>
-<div id="chart" style="display:none;"> Hidden chart</div>
+<div id="chart" style="display:none;"> Hidden chart</div> -->
 
 <!--
     This was to add a chart that I can update interactively. Am not sure what I want to put in that chart yet.
@@ -37,7 +48,7 @@ Legend:
 
 
 
-<div>
+<!-- <div>
 	<h2>Options</h2>
 <div id="option">
     <input name="saveButton" 
@@ -94,17 +105,24 @@ Legend:
 		value="change ts plot" 
 		onclick="updateTSPlot()" />
 </div>
-</div>
+</div> -->
+
+<!-- Scripts -->
+<script src="static/lib/js/d3.js"></script>
+<script src="static/js/plotNetwork.js"></script>
+<script src="static/js/updateLineColor.js"></script>
+<script src="static/js/plotTS.js"></script>
+
+
+
 
 <!-- footer-->      
-  <div id="footer-wrap"><div id="footer">        
+  <!-- <div id="footer-wrap"><div id="footer">        
       
       <p>
       &copy; 2016 Jacques de Chalendar - Released under the MIT License.
       </p>
       
-  </div></div>
- 
-
+  </div></div> -->
 </body>
 </html>

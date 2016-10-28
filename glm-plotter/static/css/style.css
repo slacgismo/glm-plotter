@@ -1,7 +1,12 @@
-/* General formatting */
+/*
+JAC - jdechalendar@stanford.edu
+July 20, 2016
+General formatting for glm-plotter app
+*/
+
 .col {
   width: 960px;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
   border: solid 1px #eee;
 }
 

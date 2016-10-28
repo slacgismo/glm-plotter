@@ -1,8 +1,10 @@
 """
     JAC - jdechalendar@stanford.edu
+    July 15, 2016
+    Flask controller for glm-plotter app
 """
 from flask import Flask, render_template, request, session
-import os, json
+import os, json, random
 import myParser
 
 app = Flask(__name__)
@@ -10,7 +12,7 @@ app = Flask(__name__)
 # route for the index page - this is the page that is visible to the user
 @app.route("/", methods=['GET','POST'])
 def index():
-    print(session)
+#    print(session)
     if request.method == 'POST':
         if 'fixedNodes' in request.files and request.files['fixedNodes'] and request.files['fixedNodes'].filename.rsplit('.', 1)[1] == 'csv':
             print('Reading the csv file')
@@ -53,12 +55,12 @@ def glm():
 # this route is accessed by the plotTS.js script
 @app.route("/data/ts/<nodeID>")
 def ts_node(nodeID):
-    #fileNm = 'uploads/' + str(nodeID) + '_small.csv'
-    from random import randint
-    if randint(0,1):
-        fileNm = 'uploads/load_12_small.csv' # for debugging
-    else:
-        fileNm = 'uploads/load_11_small.csv' # for debugging
+    fileNm = 'uploads/' + str(nodeID) + '.csv'
+    # from random import randint
+    # if randint(0,1):
+    #     fileNm = 'uploads/load_12_small.csv' # for debugging
+    # else:
+    #     fileNm = 'uploads/load_11_small.csv' # for debugging
     # myStr = ''
     # if os.path.isfile(fileNm):
     #     with open(fileNm, 'r') as fr:
@@ -66,7 +68,7 @@ def ts_node(nodeID):
     return myParser.preprocessTS(fileNm)
 
 # route to generate a list of all the timestamps in the dataset
-@app.route("data/ts/timestamps")
+@app.route("/data/ts/timestamps")
 def generate_timestamps():
     # TODO
     #return timestamps
@@ -74,10 +76,23 @@ def generate_timestamps():
 
 # route to generate data for all objects at one point in time
 # this route is accessed by the plotTS.js script
-@app.route("data/ts/<timestamp>")
+@app.route("/data/timestamp/<timestamp>")
 def global_state(timestamp):
     # TODO
-    return 0
+    #return myParser.getLineValues(timestamp)
+    # dummy data for testing
+    glmFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.glm")
+    objs, _, _ = myParser.readGLM(glmFile)
+    bla = "lineID,currentValue\n"
+    link_type = ['overhead_line','switch','underground_line','regulator','transformer', 'triplex_line','fuse']
+    link_objs = [obj for obj in objs if obj['class'] in link_type]
+    for link in link_objs:
+        bla += link['name'] + ',' + str(round(1000*random.random())/10) + '\n'
+    # if int(timestamp) < 600:
+    #     bla = "lineID,currentValue\nline50to51,0\nline51to151,0\nline49to50,0\nline47to49,0\nline47to48,0\n"
+    # else:
+    #     bla = "lineID,currentValue\nline50to51,100\nline51to151,0\nline49to50,100\nline47to49,100\nline47to48,0\n"
+    return bla
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 

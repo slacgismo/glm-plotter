@@ -1,5 +1,7 @@
 """
     JAC - jdechalendar@stanford.edu
+    July 15, 2016
+    Parsers for glm-plotter app 
 """
 import pandas as pd
 import os
@@ -162,32 +164,47 @@ def createD3JSON(objs,fileNm_out=''):
     link_type = ['overhead_line','switch','underground_line','regulator','transformer', 'triplex_line','fuse']
     link_objs = [obj for obj in objs if obj['class'] in link_type]
     links=list(zip([getAieul(objs,link['from'])[0]['name'] for link in link_objs],
-                   [getAieul(objs,link['to'])[0]['name'] for link in link_objs],[link['class'] for link in link_objs]))
+                   [getAieul(objs,link['to'])[0]['name'] for link in link_objs],[link['class'] for link in link_objs],
+                   [link['name'] for link in link_objs]))
     # define nodes I want to plot
     node_type = ['node','load','meter', 'triplex_meter','triplex_node']
     parent_objs = [obj for obj in objs if 'parent' not in obj]
     node_objs = [obj for obj in parent_objs if obj['class'] in node_type]
     #children I want to plot
     child_type = ['diesel_dg','capacitor']
-    children=dict([(obj['parent'],obj['class']) for obj in objs if obj['class'] in child_type])
+    children=dict([(obj['parent'], obj['class']) for obj in objs if obj['class'] in child_type])
     # find unique nodes
-    unique_nodes = list(set([n1 for n1, n2,n3 in links] + [n2 for n1, n2,n3 in links]+[nd['name'] for nd in node_objs]))
-    if len(unique_nodes)>len(node_objs):
-        print('I had to add ' +str(len(unique_nodes)-len(node_objs)) + ' nodes to draw the links - something is off')
+    unique_nodes = list(set([n1 for n1, n2,_,_ in links] + [n2 for n1, n2,_,_ in links]+[nd['name'] for nd in node_objs]))
+    if len(unique_nodes) > len(node_objs):
+        print('I had to add ' + str(len(unique_nodes)-len(node_objs)) + ' nodes to draw the links - something is off')
     classNm = [next((obj['class'] for obj in node_objs if obj["name"] == nd),'') for nd in unique_nodes]
     child = [children[nd] if nd in children else '' for nd in unique_nodes]
     JSONstr = ''
-    JSONstr+='{\n  "nodes":[\n'
-    if len(unique_nodes)>0:
+    JSONstr += '{\n  "nodes":[\n'
+    if len(unique_nodes) > 0:
         for iNode in range(len(unique_nodes)-1):
-            JSONstr=JSONstr+'    {"name":"' + unique_nodes[iNode] + '","classNm":"'+str(classNm[iNode])+'","child":"'+str(child[iNode])+'"},\n'
-        JSONstr+='    {"name":"'+ unique_nodes[len(unique_nodes)-1]+'","classNm":"'+str(classNm[len(unique_nodes)-1])+'","child":"'+str(child[len(unique_nodes)-1])+'"}\n'
+            JSONstr += '    {"name":"' + unique_nodes[iNode]\
+            + '","classNm":"' + str(classNm[iNode])\
+            + '","child":"' + str(child[iNode])\
+            + '"},\n'
+        JSONstr += '    {"name":"'+ unique_nodes[len(unique_nodes)-1]\
+        + '","classNm":"' + str(classNm[len(unique_nodes)-1])\
+        + '","child":"' + str(child[len(unique_nodes)-1])\
+        + '"}\n'
     JSONstr+='  ],\n "links":[\n'
-    if len(links)>0:
+    if len(links) > 0:
         for iLink in range(len(links)-1):
-            JSONstr+='    {"source":'+ str(unique_nodes.index(links[iLink][0]))+',"target":'+ str(unique_nodes.index(links[iLink][1]))+',"linkType":"'+ links[iLink][2] +'"},\n'
-        JSONstr+='    {"source":'+ str(unique_nodes.index(links[len(links)-1][0]))+',"target":'+ str(unique_nodes.index(links[len(links)-1][1]))+',"linkType":"'+ links[len(links)-1][2] +'"}\n'
-    JSONstr+='  ]\n}'
+            JSONstr +='    {"source":'+ str(unique_nodes.index(links[iLink][0]))\
+            + ',"target":'+ str(unique_nodes.index(links[iLink][1]))\
+            + ',"linkType":"'+ links[iLink][2]\
+            + '","linkName":"'+ links[iLink][3]\
+            + '"},\n'
+        JSONstr += '    {"source":'+ str(unique_nodes.index(links[len(links)-1][0]))\
+        + ',"target":'+ str(unique_nodes.index(links[len(links)-1][1]))\
+        + ',"linkType":"'+ links[len(links)-1][2]\
+        + '","linkName":"'+ links[len(links)-1][3]\
+        + '"}\n'
+    JSONstr += '  ]\n}'
     if fileNm_out:
         with open(fileNm_out,'w') as f:
             f.write(JSONstr)

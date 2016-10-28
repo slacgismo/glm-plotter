@@ -1,18 +1,24 @@
 // JAC - jdechalendar@stanford.edu
+// July 20, 2016
+
+// script to plot a distribution network imported from a glm file using D3's force layout
+
+// var width = 960,
+//     height = 760;
 var width = 960,
-    height = 760;
+    height = 400;
 
 var myTitle = d3.select("#main")
   .append("h1");
 
-var svg = d3.select("#main")
+var svgNetwork = d3.select("#main")
   .append("div")
     .attr("class", "col")
   .append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var container = svg.append("g");
+var container = svgNetwork.append("g");
 
 // zooming
 var min_zoom = .1;
@@ -26,7 +32,7 @@ function zoomed() {
   container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 }
 
-svg.call(zoom).on("dblclick.zoom", null)
+svgNetwork.call(zoom).on("dblclick.zoom", null)
 
 // initialize force
 var force = d3.layout.force()
