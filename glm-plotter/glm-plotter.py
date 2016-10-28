@@ -56,22 +56,16 @@ def glm():
 @app.route("/data/ts/<nodeID>")
 def ts_node(nodeID):
     fileNm = 'uploads/' + str(nodeID) + '.csv'
-    # from random import randint
-    # if randint(0,1):
-    #     fileNm = 'uploads/load_12_small.csv' # for debugging
-    # else:
-    #     fileNm = 'uploads/load_11_small.csv' # for debugging
-    # myStr = ''
-    # if os.path.isfile(fileNm):
-    #     with open(fileNm, 'r') as fr:
-    #         myStr = fr.read()
-    return myParser.preprocessTS(fileNm)
+    if os.path.isfile(fileNm):
+        return myParser.preprocessTS(fileNm)
+    else:
+        return ""
 
 # route to generate a list of all the timestamps in the dataset
 @app.route("/data/ts/timestamps")
 def generate_timestamps():
     # TODO
-    #return timestamps
+    #return simulation timestamps that slider will use to initialize its range
     return "23000"
 
 # route to generate data for all objects at one point in time

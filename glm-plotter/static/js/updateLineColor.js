@@ -8,7 +8,7 @@
 // d3.select("#updateLineColor").on("input", initializeLineColoring);
 
 // create the bar slider and append it to main
-sliderDiv = d3.select("#main").append('div');
+sliderDiv = d3.select("#main").append('div').attr("id", "sliderDiv").attr("style", "width: 960px;");
 sliderDiv.append('label')
     .attr('for', 'time')
     .attr('style', "display: inline-block; align: left; width: 140px; text-align: right")

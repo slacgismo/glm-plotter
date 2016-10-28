@@ -4,7 +4,15 @@
 // script to plot a timeseries
 
 // initialize plotting of time series when user presses button
+
 // d3.select("#plotTS").on("input", initializePlot);
+togglePlotTS = sliderDiv.append("select")
+  .attr("id", "togglePlotTS")
+  .attr("style", "float: right;");
+togglePlotTS.append("option")
+  .text("No plotTS");
+togglePlotTS.append("option")
+  .text("With plotTS");
 
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
@@ -24,7 +32,7 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-var svgPlotTS = d3.select("body").append("svg")
+var svgPlotTS = d3.select("#main").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -118,4 +126,21 @@ function typeTSData(d) {
   }
   // console.log(d)
   return d;
+}
+
+svgPlotTS.attr("visibility", "collapse");
+togglePlotTS.on("input", togglePlotTSChart);
+
+function togglePlotTSChart() {
+  if (document.getElementById("togglePlotTS").value == "With plotTS"){
+    console.log("with")
+    svgPlotTS.attr("visibility", "visible");  
+    svgNetwork.attr("height", hNetworkSmall);
+    force.size([wNetwork, hNetworkSmall]);
+  } else {
+    console.log("without")
+    svgPlotTS.attr("visibility", "collapse");
+    svgNetwork.attr("height", hNetworkBig);
+    force.size([wNetwork, hNetworkBig]);
+  }
 }

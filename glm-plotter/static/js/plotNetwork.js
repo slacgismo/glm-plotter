@@ -5,18 +5,20 @@
 
 // var width = 960,
 //     height = 760;
-var width = 960,
-    height = 400;
+var wNetwork = 960,
+    hNetworkSmall = 400,
+    hNetworkBig = 600;
 
 var myTitle = d3.select("#main")
-  .append("h1");
+  .append("h1")
+  .text("Default model: IEEE123");
 
 var svgNetwork = d3.select("#main")
   .append("div")
     .attr("class", "col")
   .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", wNetwork)
+    .attr("height", hNetworkBig);
 
 var container = svgNetwork.append("g");
 
@@ -39,7 +41,7 @@ var force = d3.layout.force()
     .charge(-120)
     .linkDistance(30)
   .gravity(0.05)
-    .size([width, height]);
+    .size([wNetwork, hNetworkBig]);
 
 var drag = force.drag()
   .on("dragstart", dragstart);
@@ -56,7 +58,7 @@ d3.json("/data/network", function(error, mydata) {
   var graph = mydata.graph;
   var fixedNodes = mydata.fixedNodes;
 
-  myTitle.html(fileNm);
+  if (fileNm != "") {myTitle.html(fileNm);}
 
   link = link.data(graph.links)
       .enter().append("g")
