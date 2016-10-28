@@ -57,18 +57,11 @@ function changeLineColor() {
 	update_slider(+document.getElementById("curr_time").value);
 	endPoint = updateEndPoint();
 	d3.csv(endPoint, function(error, data) {
-		// console.log(data)
 		// select all the links and make the color of the link dependent on the data
-		// console.log(svgNetwork.selectAll(".link"))
 		svgNetwork.selectAll(".link").each(function(d){
 			// TODO: optimize this - very inefficient
 			for (var i=0; i<data.length; i++){
-				// console.log(d.linkName)
-				// console.log(data[i].lineID)
 				if (d.linkName == data[i].lineID) {
-					// console.log("found")
-					// console.log(colorMapping(data[i].currentValue))
-					// console.log(d3.select(this).attr)
 					d3.select(this).select('line')
 					.attr('stroke', colorMapping(data[i].currentValue));
 				}
@@ -77,7 +70,7 @@ function changeLineColor() {
 
 	});
 }
-changeLineColor();
+// changeLineColor();
 
 
 

@@ -3,11 +3,9 @@
 
 // script to plot a distribution network imported from a glm file using D3's force layout
 
-// var width = 960,
-//     height = 760;
 var wNetwork = 960,
     hNetworkSmall = 400,
-    hNetworkBig = 600;
+    hNetworkBig = 650;
 
 var myTitle = d3.select("#main")
   .append("h1")
@@ -82,7 +80,6 @@ d3.json("/data/network", function(error, mydata) {
 	  .call(drag) // this command enables the dragging feature
 	  .on("dblclick", dblclick)
     .on("click",function(d){updateTSPlot(d.name)});
-    // .on("click",clickAction); // this was removed but can be used to display a hidden chart
   
   node.each(function(d){
     if (d.classNm) {
@@ -98,7 +95,6 @@ d3.json("/data/network", function(error, mydata) {
   var circle = node.append("circle")
 	.attr("r", 10)
 	.attr("class", function(d) { return d.classNm; });
-	//.style("fill", function(d) { return color(d.group); });
   var label = node.append("text")
     .text(function(d) { return d.name })
 	.attr("class", "nodeNm");
@@ -159,14 +155,6 @@ function dragstart(d) {
 function dblclick(d) {
   d3.select(this).classed("fixed", d.fixed = false);
 }
-// function clickAction(d){
-//  if (document.getElementById('chart').style.display=='none'){
-//    document.getElementById('chart').style.display='block';
-//  }
-//  else {
-//   document.getElementById('chart').style.display='none';
-//  }
-// }
 function saveXY(){
   var pre = document.getElementById('rmPreText').value;
 	var myStr = "data:text/csv;charset=utf-8,";
@@ -187,15 +175,6 @@ function saveXY(){
 	for (var ii=0; ii<txtArr.length; ii++){
 		myStr = myStr + txtArr[ii] + "," + cxArr[ii] + "," + cyArr[ii] + "\n"
 	}
-//	var cc = node.selectAll("circle")
-//	var myStr = "data:text/csv;charset=utf-8,";
-//	cc.each(function(d){
-//		myStr = myStr+[d3.select(this).attr("cx") ,d3.select(this).attr("cy")].join(",") +"\n"
-//	});
-//	node.selectAll('text.nodeNm').each(function (d){
-//		d3.select(this).text()
-//	})
-	//console.log(myStr)
 	var encodedUri = encodeURI(myStr);
 	var dummy = document.createElement("a");
 	dummy.setAttribute("href", encodedUri);
@@ -261,5 +240,3 @@ function changeGravity(){
 function changeCharge(){
 	force.charge(Number(document.getElementById('chargeVal').value));
 }
-
-//node.on("mouseover",mouseover)

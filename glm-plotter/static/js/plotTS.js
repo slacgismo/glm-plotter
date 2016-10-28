@@ -3,9 +3,6 @@
 
 // script to plot a timeseries
 
-// initialize plotting of time series when user presses button
-
-// d3.select("#plotTS").on("input", initializePlot);
 togglePlotTS = sliderDiv.append("select")
   .attr("id", "togglePlotTS")
   .attr("style", "float: right;");
@@ -15,62 +12,73 @@ togglePlotTS.append("option")
   .text("With plotTS");
 
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    wPlot = 960 - margin.left - margin.right,
+    hPlot = 300 - margin.top - margin.bottom,
+    padding = 50;
 
-var x = d3.time.scale()
-    .range([0, width]);
+var dummyData=[{"date":new Date(2020,0,1)},
+            {"date":new Date(2020,0,2)}];
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+var xScale = d3.time.scale()
+    .range([padding, wPlot-padding])
+    .domain(d3.extent(dummyData, function(d) { return d.date; }));
 
+var yScale = d3.scale.linear()
+    .range([hPlot-padding,padding/2])
+    .domain([0, 40]);
+
+var date_format = d3.time.format("%d-%b %H:%m");
 var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+    .scale(xScale)
+    .orient("bottom")
+    .ticks(10)
+    .tickFormat(date_format);
 
 var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
+    .scale(yScale)
+    .orient("left")
+    .ticks(6);
 
 var svgPlotTS = d3.select("#main").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", wPlot + margin.left + margin.right)
+    .attr("height", hPlot + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// add x axis
 svgPlotTS.append("g")
-  .attr("class", "x axis")
-  .attr("transform", "translate(0," + height + ")")
+  .attr("class", "x_axis")
+  .attr("transform", "translate(0," + (hPlot-padding) + ")")
   .call(xAxis)
-.append("text")
-  .attr("y", 15)
-  .attr("x", 450)
-  .style("text-anchor", "end")
-  .text("time");
+// x label
+xlabel = svgPlotTS.append("text")
+  .attr("text-anchor", "middle")
+  .attr("transform", "translate(" + (wPlot/2) + "," + (hPlot-(padding/3)) + ")")
+  .text("Time");
 
+// add y axis
 svgPlotTS.append("g")
-  .attr("class", "y axis")
+  .attr("class", "y_axis")
+  .attr("transform", "translate(" + padding + ",0)")
   .call(yAxis)
-.append("text")
-  .attr("transform", "rotate(-90)")
-  .attr("y", 6)
-  .attr("dy", "-3em")
-  .style("text-anchor", "end")
+// y label
+ylabel = svgPlotTS.append("text")
+  .attr("text-anchor", "middle")
+  .attr("transform", "translate(" + 0 + "," + (hPlot/2) + ")rotate(-90)")
   .text("Voltage (V)");
 
-var myLine = svgPlotTS.append("path")
+svgPlotTS.selectAll(".x_axis text")  // select all the text elements for the xaxis
+    .attr("transform", function(d) {
+      return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-30)";
+    });
 
-// var myInput = d3.select("body")
-//     .append("input")
-//     .attr("type","button")
-//     .attr("value", "change ts")
-//     .on("click", updateTSPlot);
+var myLine = svgPlotTS.append("path")
 
 var fieldToPlot = "voltage_A.real";
 
 var line = d3.svg.line()
-    .x(function(d) { return x(d.timestamp); })
-    .y(function(d) { return y(d[fieldToPlot]); });
+    .x(function(d) { return xScale(d.timestamp); })
+    .y(function(d) { return yScale(d[fieldToPlot]); });
 
 function updateTSPlot(nodeID){
     if (typeof nodeID !== 'undefined'){
@@ -78,33 +86,25 @@ function updateTSPlot(nodeID){
     } else{
         var endPoint = "data/ts/" + document.getElementById('tsPlotID').value
     }
-    // d3.tsv(endPoint, type, function(error, data) {
-    //   if (error) throw error;
+    ylabel.text("Voltage - " + nodeID + " (V)");
 
-    //   x.domain(d3.extent(data, function(d) { return d.date; }));
-    //   y.domain(d3.extent(data, function(d) { return d.close; }));
-
-    //   myLine.datum(data)
-    //       .attr("class", "line")
-    //       .attr("d", line);
-    // });
-    // console.log(endPoint)
     d3.csv(endPoint, typeTSData, function(data) {
-      // console.log(data)
       // extract header vals
       // assume that 'timestamp'column is always there - remove it from the header list
       var header = d3.keys(data[0])
       var id = header.indexOf('timestamp');
       if (id > -1) {header.splice(id, 1);}
-      // console.log(header)
-      // console.log(data)
       // TODO: give the user an option to select which ones he wants to plot
       // for now use hack
 
       // set limits of axes
-      x.domain(d3.extent(data, function(d) { return d.timestamp; }));
-      y.domain(d3.extent(data, function(d) { return d[fieldToPlot]; }));
-      // console.log(data)
+      xScale.domain(d3.extent(data, function(d) { return d.timestamp; }));
+      yScale.domain(d3.extent(data, function(d) { return d[fieldToPlot];})).nice();
+      svgPlotTS.selectAll("g.x_axis")
+        .call(xAxis);
+      svgPlotTS.selectAll("g.y_axis")
+        .call(yAxis);
+
       myLine.datum(data)
           .attr("class", "line")
           .attr("d", line);
@@ -117,18 +117,15 @@ function updateTSPlot(nodeID){
 var formatDate = d3.time.format("%Y-%m-%d %H:%M:%S.%L PST");
 
 function typeTSData(d) {
-  // console.log(d.timestamp)
   d.timestamp = formatDate.parse(d.timestamp);
-  // console.log(d.timestamp)
   var headers = d3.keys(d)
   for (var i = 0; i < headers.length; i++){
     if (headers[i] != 'timestamp'){d[headers[i]] = +d[headers[i]];}
   }
-  // console.log(d)
   return d;
 }
 
-svgPlotTS.attr("visibility", "collapse");
+// svgPlotTS.attr("visibility", "collapse");
 togglePlotTS.on("input", togglePlotTSChart);
 
 function togglePlotTSChart() {
