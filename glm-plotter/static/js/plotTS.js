@@ -42,37 +42,38 @@ var yAxis = d3.svg.axis()
 var svgPlotTS = d3.select("#main").append("svg")
     .attr("width", wPlot + margin.left + margin.right)
     .attr("height", hPlot + margin.top + margin.bottom)
-  .append("g")
+var gPlotTS = svgPlotTS.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // add x axis
-svgPlotTS.append("g")
-  .attr("class", "x_axis")
+gPlotTS.append("g")
+  .attr("class", "axis x_axis")
   .attr("transform", "translate(0," + (hPlot-padding) + ")")
   .call(xAxis)
 // x label
-xlabel = svgPlotTS.append("text")
+xlabel = gPlotTS.append("text")
   .attr("text-anchor", "middle")
-  .attr("transform", "translate(" + (wPlot/2) + "," + (hPlot-(padding/3)) + ")")
+  .attr("transform", "translate(" + (wPlot/2) + "," + (hPlot-(padding/4)) + ")")
   .text("Time");
 
 // add y axis
-svgPlotTS.append("g")
-  .attr("class", "y_axis")
+gPlotTS.append("g")
+  .attr("class", "axis y_axis")
   .attr("transform", "translate(" + padding + ",0)")
   .call(yAxis)
 // y label
-ylabel = svgPlotTS.append("text")
+ylabel = gPlotTS.append("text")
   .attr("text-anchor", "middle")
-  .attr("transform", "translate(" + 0 + "," + (hPlot/2) + ")rotate(-90)")
+  .attr("transform", "translate(" + padding/4 + "," + (hPlot/2) + ")rotate(-90)")
   .text("Voltage (V)");
 
-svgPlotTS.selectAll(".x_axis text")  // select all the text elements for the xaxis
-    .attr("transform", function(d) {
-      return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-30)";
-    });
+// slightly rotate x axis tick labels to make more readable - dropped for now
+// gPlotTS.selectAll(".x_axis text")
+//     .attr("transform", function(d) {
+//       return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-30)";
+//     });
 
-var myLine = svgPlotTS.append("path")
+var myLine = gPlotTS.append("path")
 
 var fieldToPlot = "voltage_A.real";
 
@@ -100,9 +101,9 @@ function updateTSPlot(nodeID){
       // set limits of axes
       xScale.domain(d3.extent(data, function(d) { return d.timestamp; }));
       yScale.domain(d3.extent(data, function(d) { return d[fieldToPlot];})).nice();
-      svgPlotTS.selectAll("g.x_axis")
+      gPlotTS.selectAll("g.x_axis")
         .call(xAxis);
-      svgPlotTS.selectAll("g.y_axis")
+      gPlotTS.selectAll("g.y_axis")
         .call(yAxis);
 
       myLine.datum(data)
@@ -125,18 +126,24 @@ function typeTSData(d) {
   return d;
 }
 
-// svgPlotTS.attr("visibility", "collapse");
+svgPlotTS.attr("visibility", "collapse")
+  .attr("width", 0)
+  .attr("height", 0);
 togglePlotTS.on("input", togglePlotTSChart);
 
 function togglePlotTSChart() {
   if (document.getElementById("togglePlotTS").value == "With plotTS"){
     console.log("with")
-    svgPlotTS.attr("visibility", "visible");  
+    svgPlotTS.attr("visibility", "visible")
+      .attr("width", wPlot + margin.left + margin.right)
+      .attr("height", hPlot + margin.top + margin.bottom);  
     svgNetwork.attr("height", hNetworkSmall);
     force.size([wNetwork, hNetworkSmall]);
   } else {
     console.log("without")
-    svgPlotTS.attr("visibility", "collapse");
+    svgPlotTS.attr("visibility", "collapse")
+      .attr("width", 0)
+      .attr("height", 0);
     svgNetwork.attr("height", hNetworkBig);
     force.size([wNetwork, hNetworkBig]);
   }

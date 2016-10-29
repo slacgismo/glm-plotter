@@ -8,14 +8,14 @@
 // d3.select("#updateLineColor").on("input", initializeLineColoring);
 
 // create the bar slider and append it to main
-sliderDiv = d3.select("#main").append('div').attr("id", "sliderDiv").attr("style", "width: 960px;");
+var sliderDiv = d3.select("#main").append('div').attr("id", "sliderDiv").attr("style", "width: 960px;");
 sliderDiv.append('label')
     .attr('for', 'time')
     .attr('style', "display: inline-block; align: left; width: 140px; text-align: right")
 	.text("Time = ")
   .append('span')
   	.attr("id", "prettyTime");
-sliderDiv.append('input')
+var sliderDivInput = sliderDiv.append('input')
 	.attr("type", "range")
 	.attr("id", "curr_time")
 	.attr("min", "240")

@@ -81,13 +81,29 @@ def global_state(timestamp):
     link_type = ['overhead_line','switch','underground_line','regulator','transformer', 'triplex_line','fuse']
     link_objs = [obj for obj in objs if obj['class'] in link_type]
     for link in link_objs:
-        bla += link['name'] + ',' + str(round(1000*random.random())/10) + '\n'
+        #bla += link['name'] + ',' + str(round(1000*random.random())/10) + '\n'
+        bla += link['name'] + ',' + str(getDataPoint(link['name'], timestamp)) + '\n'
     # if int(timestamp) < 600:
     #     bla = "lineID,currentValue\nline50to51,0\nline51to151,0\nline49to50,0\nline47to49,0\nline47to48,0\n"
     # else:
     #     bla = "lineID,currentValue\nline50to51,100\nline51to151,0\nline49to50,100\nline47to49,100\nline47to48,0\n"
     return bla
 
+# return the data point for a linkID and a time stamp
+# for now read from the csv - at some point move to a query against a database to make more efficient
+def getDataPoint(linkID, timestamp):
+    return str(round(1000*random.random())/10)
+    # fileNm = 'uploads/' + linkID + '.csv'
+    # dataPoint = ""
+    # if os.path.isfile(fileNm)
+    #     with open(fileNm, 'r') as fr:
+    #         lines = fr.readlines()
+    #     for l in lines:
+    #         currLine = l.split(',')
+    #         if currLine[0] == timestamp:
+    #             dataPoint = currLine[1]
+    # else:
+    #     return None
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 def parseFixedNodes(nodesFile):

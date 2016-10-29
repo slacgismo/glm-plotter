@@ -1,0 +1,25 @@
+/*
+JAC - jdechalendar@stanford.edu
+Oct 27, 2016
+General formatting for time series chart
+*/
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+text {
+  font-size: 15px;
+}
+.axis text {
+  font-family: sans-serif;
+  font-size: 11px;
+}
