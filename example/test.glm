@@ -1,0 +1,75 @@
+
+clock {
+	timezone "PST+8PDT";
+	starttime '2001-01-01 00:00:00 PST';
+	stoptime '2001-01-01 00:00:20 PST';
+}
+
+//Pure nodes
+
+object node {
+	name node_1;
+}
+object node {
+	name node_2;
+}
+
+object node {
+	name node_3;
+}
+
+object node {
+	name node_4;
+}
+
+object node {
+	name node_5;
+}
+
+object node {
+	name node_6;
+}
+
+object node {
+	name node_7;
+}
+
+object overhead_line {
+	name line1to2;
+	from node_1;
+	to node_2;
+}
+
+object overhead_line {
+	name line2to3;
+	from node_2;
+	to node_3;
+}
+
+object overhead_line {
+	name line3to4;
+	from node_3;
+	to node_4;
+}
+
+object overhead_line {
+	name line4to5;
+	from node_4;
+	to node_5;
+}
+
+object overhead_line {
+	name line4to6;
+	from node_4;
+	to node_6;
+}
+object overhead_line {
+	name line6to7;
+	from node_7;
+	to node_6;
+}
+object overhead_line {
+	name line5to6;
+	from node_5;
+	to node_6;
+}
