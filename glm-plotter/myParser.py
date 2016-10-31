@@ -151,23 +151,11 @@ def getAieul(objs,name):
         parent = getAieul(objs,parent[0]['parent'])
     return parent;
 
-def createD3JSON(objs,fileNm_out=''):
-    """
-        This function creates a json file that will be used for plotting the GLM objects by the D3 force algorithm
-        We use hardcoded decisions of which links and nodes should be plotted
-        See GLMtoJSON notebook to change this
-        Inputs are the objs object from the readGLM function and a file to write the output to
-        If no file name is provided, returns the json string
-    """
-
-    # define links I want to plot
-    link_type = ['overhead_line','switch','underground_line','regulator','transformer', 'triplex_line','fuse']
+def createGraph(objs, node_type=['node','load','meter', 'triplex_meter','triplex_node'], link_type=['overhead_line','switch','underground_line','regulator','transformer', 'triplex_line','fuse']):
     link_objs = [obj for obj in objs if obj['class'] in link_type]
     links=list(zip([getAieul(objs,link['from'])[0]['name'] for link in link_objs],
                    [getAieul(objs,link['to'])[0]['name'] for link in link_objs],[link['class'] for link in link_objs],
                    [link['name'] for link in link_objs]))
-    # define nodes I want to plot
-    node_type = ['node','load','meter', 'triplex_meter','triplex_node']
     parent_objs = [obj for obj in objs if 'parent' not in obj]
     node_objs = [obj for obj in parent_objs if obj['class'] in node_type]
     #children I want to plot
@@ -179,6 +167,26 @@ def createD3JSON(objs,fileNm_out=''):
         print('I had to add ' + str(len(unique_nodes)-len(node_objs)) + ' nodes to draw the links - something is off')
     classNm = [next((obj['class'] for obj in node_objs if obj["name"] == nd),'') for nd in unique_nodes]
     child = [children[nd] if nd in children else '' for nd in unique_nodes]
+
+    return unique_nodes, links, child, classNm
+
+def createD3JSON(objs,fileNm_out=''):
+    """
+        This function creates a json file that will be used for plotting the GLM objects by the D3 force algorithm
+        We use hardcoded decisions of which links and nodes should be plotted
+        See GLMtoJSON notebook to change this
+        Inputs are the objs object from the readGLM function and a file to write the output to
+        If no file name is provided, returns the json string
+    """
+
+    # define links I want to plot
+    link_type = ['overhead_line','switch','underground_line','regulator','transformer', 'triplex_line','fuse']
+    
+    # define nodes I want to plot
+    node_type = ['node','load','meter', 'triplex_meter','triplex_node']
+    
+    unique_nodes, links, child, classNm = createGraph(objs, node_type, link_type)
+
     JSONstr = ''
     JSONstr += '{\n  "nodes":[\n'
     if len(unique_nodes) > 0:
